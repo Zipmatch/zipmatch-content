@@ -1,0 +1,30 @@
+---
+info:
+    title: Content
+    description: Simple S3 CMS for Website Content
+    version: 0.0.1
+produces:
+    - application/json
+basePath: /
+definitions:
+    ApiError:
+        required:
+            - error
+        properties:
+            error:
+                type: string
+                description: The error
+            message:
+                type: string
+                description: The error description
+    ContentData:
+        required:
+            - id
+            - body
+        properties:
+            id:
+                type: string
+                description: The full S3 ObjectID
+            body:
+                type: string
+                description: The __actual__ content in markdown format
