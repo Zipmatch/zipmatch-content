@@ -23,7 +23,14 @@ $ ./cli.py run -p 5004
 ## Configuration
 Done using environment variables:
 
+**REDIS_URL_READ**
+**REDIS_URL_WRITE**
+The URL of the redis server to use. Default `redis:///` (Set them to the same in an un-clustered Redis setup)
+
+**AWS_KEY**
+**AWS_SECRET**
 AWS Credentials (Key and Secret)
+
 
 ### Configuring the docker container
 
