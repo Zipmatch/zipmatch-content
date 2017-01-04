@@ -4,7 +4,7 @@ from flask import jsonify
 blueprint = Blueprint('content', __name__)
 
 
-@blueprint.route('/content/<str:section>/<str:sub_section>/<str:fragment>')
+@blueprint.route('/content/<section>/<sub_section>/<fragment>')
 def content(section, sub_section, fragment):
     """ Piece of Content
     ---
@@ -38,3 +38,5 @@ def content(section, sub_section, fragment):
         schema:
           $ref: '#/definitions/ApiError'
     """
+    markdown = "#{sec}#\n\n##{sub_sec}##\n\n{frag}".format(sec=section, sub_sec=sub_section, frag=fragment)
+    return jsonify({"id": "an S3 URN goes here", "body": markdown})

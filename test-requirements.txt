@@ -5,7 +5,18 @@
 #    pip-compile --output-file test-requirements.txt test-requirements.in
 #
 --extra-index-url http://repo.zipmatch.com/
+--extra-index-url http://repo.zipmatch.com/
 --trusted-host repo.zipmatch.com
 
+click==6.6                # via flask
+coverage==4.3.1           # via pytest-cov
+Flask==0.12               # via pytest-flask
+itsdangerous==0.24        # via flask
+Jinja2==2.8.1             # via flask
+MarkupSafe==0.23          # via jinja2
 py==1.4.32                # via pytest
+pytest-cov==2.4.0
+pytest-flask==0.10.0
+pytest-mock==1.5.0
 pytest==3.0.5
+Werkzeug==0.11.15         # via flask, pytest-flask
