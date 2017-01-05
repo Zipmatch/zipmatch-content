@@ -53,6 +53,6 @@ def content(section, sub_section, fragment):
 def _get_s3_client(config):
     kwargs = {'service_name': 's3', 'aws_access_key_id': config['AWS_KEY'], 'aws_secret_access_key': config['AWS_SECRET']}
     if 'S3_URL' in config and config['S3_URL']:
-        kwargs['endpoint_url'] = config['S3_URL']
+        kwargs['endpoint_url'] = "http://{url}".format(url=config['S3_URL'])
     session = boto3.session.Session()
     return session.client(**kwargs)

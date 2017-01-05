@@ -16,6 +16,6 @@ ADD https://github.com/krallin/tini/releases/download/v0.13.0/tini-static-amd64 
 RUN chmod +x /sbin/tini
 
 
-EXPOSE 5003
+EXPOSE 5004
 
 ENTRYPOINT ["/sbin/tini", "--", "/code/docker-config/entrypoint.sh"]
