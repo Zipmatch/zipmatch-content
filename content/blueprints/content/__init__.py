@@ -41,7 +41,7 @@ def content(section, sub_section, fragment):
           $ref: '#/definitions/ApiError'
     """
     config = current_app.config
-    client = _getS3Client(config)
+    client = _get_s3_client(config)
     key = "{sec}/{sub_sec}/{frag}{fext}".format(sec=section, sub_sec=sub_section, frag=fragment, fext=config['CONTENT_FILE_EXTENSTION'])
     kwargs = {"Bucket": config['BUCKET_NAME'], "Key": key}
     content_obj = client.get_object(**kwargs)
@@ -50,7 +50,7 @@ def content(section, sub_section, fragment):
     return jsonify({"bucket": config['BUCKET_NAME'], "key": key, "content_length": content_length, "body": content_body})
 
 
-def _getS3Client(config):
+def _get_s3_client(config):
     kwargs = {'service_name': 's3', 'aws_access_key_id': config['AWS_KEY'], 'aws_secret_access_key': config['AWS_SECRET']}
     if 'S3_URL' in config and config['S3_URL']:
         kwargs['endpoint_url'] = config['S3_URL']
