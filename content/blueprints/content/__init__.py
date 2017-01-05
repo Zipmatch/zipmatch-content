@@ -1,5 +1,7 @@
+import boto3
 from flask import Blueprint
 from flask import jsonify
+from flask import current_app
 
 blueprint = Blueprint('content', __name__)
 
@@ -38,5 +40,19 @@ def content(section, sub_section, fragment):
         schema:
           $ref: '#/definitions/ApiError'
     """
-    markdown = "#{sec}#\n\n##{sub_sec}##\n\n{frag}".format(sec=section, sub_sec=sub_section, frag=fragment)
-    return jsonify({"id": "an S3 URN goes here", "body": markdown})
+    config = current_app.config
+    client = _getS3Client(config)
+    key = "{sec}/{sub_sec}/{frag}{fext}".format(sec=section, sub_sec=sub_section, frag=fragment, fext=config['CONTENT_FILE_EXTENSTION'])
+    kwargs = {"Bucket": config['BUCKET_NAME'], "Key": key}
+    content_obj = client.get_object(**kwargs)
+    content_length = content_obj['ContentLength']
+    content_body = content_obj['Body'].read().decode('utf8')
+    return jsonify({"bucket": config['BUCKET_NAME'], "key": key, "content_length": content_length, "body": content_body})
+
+
+def _getS3Client(config):
+    kwargs = {'service_name': 's3', 'aws_access_key_id': config['AWS_KEY'], 'aws_secret_access_key': config['AWS_SECRET']}
+    if 'S3_URL' in config and config['S3_URL']:
+        kwargs['endpoint_url'] = config['S3_URL']
+    session = boto3.session.Session()
+    return session.client(**kwargs)
