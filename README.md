@@ -39,6 +39,12 @@ AWS Credentials (Key and Secret)
 
 S3 Bucket Name for the Content Store
 
+**APP_S3_URL**
+
+This Env Variable MUST be supplied in any environment where "Fake" S3 service is being used.
+
+It MUST NOT be supplied in any environment where REAL AWS S3 is being used.
+
 
 ### Configuring the docker container
 
