@@ -5,6 +5,8 @@ info:
     version: 0.0.1
 produces:
     - application/json
+consumes:
+    - application/json
 basePath: /
 definitions:
     ApiError:
@@ -19,12 +21,27 @@ definitions:
                 description: The error description
     ContentData:
         required:
-            - id
+            - key
             - body
+            - content_length
+            - bucket
         properties:
-            id:
+            key:
                 type: string
                 description: The full S3 ObjectID
             body:
                 type: string
                 description: The __actual__ content in markdown format
+            content_length:
+                type: number
+                description: Content Length in bytes
+            bucket:
+                type: string
+                description: The Bucket that the content came from
+    ContentUpload:
+        required:
+            - content
+        properties:
+            content:
+                type: string
+                description: The Markdown Content that you want to upload
