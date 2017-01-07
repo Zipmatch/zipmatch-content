@@ -107,6 +107,14 @@ def content(section, sub_section, fragment):
                     "content_length": content_length, "body": content_body})
 
 
+@blueprint.route('/content/createpaths', methods=["GET"])
+def createpaths():
+    client = _get_s3_client(current_app.config)
+    objs = client.list_objects_v2(Bucket=current_app.config["BUCKET_NAME"])
+    keys = [x['Key'] for x in objs['Contents']]
+    return jsonify(keys)
+
+
 def _get_s3_client(config):
     kwargs = {'service_name': 's3',
               'aws_access_key_id': config['AWS_KEY'],
