@@ -104,15 +104,32 @@ def content(section, sub_section, fragment):
     content_body = content_obj['Body'].read().decode('utf8')
     return jsonify({"bucket": config['BUCKET_NAME'],
                     "key": key,
-                    "content_length": content_length, "body": content_body})
+                    "content_length": content_length,
+                    "body": content_body})
 
 
-@blueprint.route('/content/createpaths', methods=["GET"])
-def createpaths():
+@blueprint.route('/content/paths', methods=["GET"])
+def get_paths():
     client = _get_s3_client(current_app.config)
     objs = client.list_objects_v2(Bucket=current_app.config["BUCKET_NAME"])
+    if objs['IsTruncated']:
+        paginator = client.get_paginator('list_objects_v2')
+        start_after = objs['Contents'][-1]['Key']
+        page_iterator = paginator.paginate(Bucket=current_app.config["BUCKET_NAME"],
+                                           StartAfter=start_after)
+        for page in page_iterator:
+            objs['Contents'].append(page['Contents'])
     keys = [x['Key'] for x in objs['Contents']]
-    return jsonify(keys)
+    paths = {}
+    for key in keys:
+        keyparts = key.split("/")
+        if keyparts[0] not in paths:
+            paths[keyparts[0]] = {}
+        if keyparts[1] not in paths[keyparts[0]]:
+            paths[keyparts[0]][keyparts[1]] = []
+        if keyparts[2] not in paths[keyparts[0]][keyparts[1]]:
+            paths[keyparts[0]][keyparts[1]].append(keyparts[2])
+    return jsonify(paths)
 
 
 def _get_s3_client(config):
