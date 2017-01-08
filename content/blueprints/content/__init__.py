@@ -110,6 +110,24 @@ def content(section, sub_section, fragment):
 
 @blueprint.route('/content/paths', methods=["GET"])
 def get_paths():
+    """ Create and retrieve an 'filepaths' Object
+    Endpoint to Create and retrieve an Object that represents all of the filepaths
+    in the content store
+    ---
+    tags:
+      - paths
+    responses:
+      200:
+        description: content data
+        schema:
+          $ref: '#/definitions/FilepathData'
+      404:
+        description: Content not found
+      default:
+        description: Unexpected error
+        schema:
+          $ref: '#/definitions/ApiError'
+    """
     client = _get_s3_client(current_app.config)
     objs = client.list_objects_v2(Bucket=current_app.config["BUCKET_NAME"])
     if objs['IsTruncated']:
@@ -120,15 +138,15 @@ def get_paths():
         for page in page_iterator:
             objs['Contents'].append(page['Contents'])
     keys = [x['Key'] for x in objs['Contents']]
-    paths = {}
+    paths = {"sections": {}}
     for key in keys:
         keyparts = key.split("/")
-        if keyparts[0] not in paths:
-            paths[keyparts[0]] = {}
-        if keyparts[1] not in paths[keyparts[0]]:
-            paths[keyparts[0]][keyparts[1]] = []
-        if keyparts[2] not in paths[keyparts[0]][keyparts[1]]:
-            paths[keyparts[0]][keyparts[1]].append(keyparts[2])
+        if keyparts[0] not in paths['sections']:
+            paths['sections'][keyparts[0]] = {}
+        if keyparts[1] not in paths['sections'][keyparts[0]]:
+            paths['sections'][keyparts[0]][keyparts[1]] = []
+        if keyparts[2] not in paths['sections'][keyparts[0]][keyparts[1]]:
+            paths['sections'][keyparts[0]][keyparts[1]].append(keyparts[2])
     return jsonify(paths)
 
 
