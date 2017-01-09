@@ -45,3 +45,8 @@ definitions:
             content:
                 type: string
                 description: The Markdown Content that you want to upload
+    FilepathData:
+        properties:
+            sections:
+                type: object
+                description: Nested JSON Object containing subsections and files
