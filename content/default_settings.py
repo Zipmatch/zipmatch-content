@@ -1,4 +1,5 @@
 AWS_KEY = "key"
 AWS_SECRET = "secret"
-BUCKET_NAME = "zm-content-dev"
+AWS_REGION = ""
+BUCKET_NAME = "[BUCKET_NAME_HERE]"
 CONTENT_FILE_EXTENSTION = ".md"
