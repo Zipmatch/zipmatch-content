@@ -33,7 +33,7 @@ Done using environment variables:
 
 **APP_BUCKET_NAME**
 
-S3 Bucket Name for the Content Store
+### Local Development Only - Env Var for local "fake" S3 service. ###
 
 **APP_S3_URL**
 
