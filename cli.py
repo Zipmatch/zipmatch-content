@@ -9,6 +9,7 @@ from flask import current_app
 from flask.cli import FlaskGroup
 
 from content.app import create_app
+from content.blueprints.content import _get_s3_client, _generate_key, _prepare_content
 
 
 @click.group(cls=FlaskGroup, create_app=lambda info: create_app())
@@ -43,6 +44,18 @@ def tests(pytest_args):
     args = ('pytest',) + pytest_args + ('tests/',)
     r = subprocess.run(args)
     sys.exit(r.returncode)
+
+
+@cli.command()
+@click.argument('source', type=click.File('r'))
+@click.argument('section')
+@click.argument('sub_section')
+@click.argument('fragment')
+def upload(source, section, sub_section, fragment):
+    client = _get_s3_client(current_app.config)
+    key = _generate_key(current_app.config, section, sub_section, fragment)
+    content_ready_for_upload = _prepare_content(source.read())
+    client.upload_fileobj(content_ready_for_upload, current_app.config['BUCKET_NAME'], key)
 
 
 if __name__ == '__main__':
