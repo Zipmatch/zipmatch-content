@@ -161,10 +161,13 @@ def _get_s3_client(config):
 
 
 def _generate_key(config, section, sub_section, fragment):
-    return "{sec}/{sub_sec}/{frag}{fext}".format(sec=section,
-                                                 sub_sec=sub_section,
-                                                 frag=fragment,
-                                                 fext=config['CONTENT_FILE_EXTENSTION'])
+    if '.' not in fragment:
+        return "{sec}/{sub_sec}/{frag}{fext}".format(sec=section,
+                                                     sub_sec=sub_section,
+                                                     frag=fragment,
+                                                     fext=config['CONTENT_FILE_EXTENSTION'])
+    else:
+        return "{sec}/{sub_sec}/{frag}".format(sec=section, sub_sec=sub_section, frag=fragment)
 
 
 def _prepare_content(content):
