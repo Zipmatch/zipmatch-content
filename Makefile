@@ -6,11 +6,11 @@ DOCKER_TAG ?= latest
 IMAGE = zipmatch/zipmatch-content:$(DOCKER_TAG)
 REMOTE_IMAGE = $(DOCKER_REPO)/$(IMAGE)
 PORT ?= 5004
-WORKER_CLASS ?= sync
+WORKER_CLASS ?= gevent
 
 all: build
 
-build: clean install build-gulp build-docker
+build: build-docker tag-docker push-docker
 
 
 build-docker:
