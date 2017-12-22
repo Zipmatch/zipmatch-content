@@ -4,32 +4,24 @@ import sys
 import subprocess
 
 import click
+from flask import current_app
 from flask.cli import FlaskGroup
 
 from content.app import create_app
+from content.blueprints.content.util import get_s3_client, generate_key, prepare_content
 
 
-def _parse_envfile(env_file):
-    with open(env_file, 'r') as f:
-        for line in f:
-            line = line.strip()
-            if '=' in line and not line.startswith('#'):
-                variable, value = line.split('=')
-                if value.startswith('"'):
-                    os.environ[variable] = value.strip('"')
-                elif value.startswith("'"):
-                    os.environ[variable] = value.strip("'")
-                else:
-                    os.environ[variable] = value
-
-
-def _create_app(info):
-    return create_app()
-
-
-@click.group(cls=FlaskGroup, create_app=_create_app)
+@click.group(cls=FlaskGroup, create_app=lambda info: create_app())
 def cli():
     """This is a management script for the application."""
+
+
+@cli.command()
+@click.option('--host', '-h', default='127.0.0.1', envvar='HOST', help='The interface to bind to.')
+@click.option('--port', '-p', default=5000, envvar='PORT', help='The port to bind to.')
+def run(host, port):
+    """ Runs a local development server. """
+    current_app.run(host, port)
 
 
 @cli.command(context_settings=dict(
@@ -52,9 +44,17 @@ def tests(pytest_args):
     sys.exit(r.returncode)
 
 
+@cli.command()
+@click.argument('source', type=click.File('r'))
+@click.argument('section')
+@click.argument('sub_section')
+@click.argument('fragment')
+def upload(source, section, sub_section, fragment):
+    client = get_s3_client(current_app.config)
+    key = generate_key(current_app.config, section, sub_section, fragment)
+    content_ready_for_upload = prepare_content(source.read())
+    client.upload_fileobj(content_ready_for_upload, current_app.config['BUCKET_NAME'], key)
+
+
 if __name__ == '__main__':
-    if os.path.exists('.env'):
-        _parse_envfile('.env')
-    if not os.environ.get('FLASK_DEBUG'):
-        os.environ['FLASK_DEBUG'] = '1'
     cli()
