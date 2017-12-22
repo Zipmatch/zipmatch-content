@@ -3,6 +3,8 @@ from io import BytesIO
 
 import boto3
 
+DEFAULT_CONTENT_EXTENSION = '.md'
+
 
 def get_s3_client(config):
     kwargs = {'service_name': 's3',
@@ -16,7 +18,7 @@ def get_s3_client(config):
 
 def generate_key(config, path):
     if not splitext(path)[1]:
-        return '{}{}'.format(path, config['CONTENT_FILE_EXTENSTION'])
+        return '{}{}'.format(path, DEFAULT_CONTENT_EXTENSION)
     return path
 
 
