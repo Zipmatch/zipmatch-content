@@ -1,5 +1,4 @@
 boto3
 markdown
 flask
-flask-swagger
 python-dotenv
