@@ -4,18 +4,16 @@ import sys
 import subprocess
 
 import click
-import dotenv
 from flask import current_app
 from flask.cli import FlaskGroup
 
 from content.app import create_app
-from content.blueprints.content import _get_s3_client, _generate_key, _prepare_content
+from content.blueprints.content.util import get_s3_client, generate_key, prepare_content
 
 
 @click.group(cls=FlaskGroup, create_app=lambda info: create_app())
 def cli():
     """This is a management script for the application."""
-    dotenv.load_dotenv('.env')
 
 
 @cli.command()
@@ -52,9 +50,9 @@ def tests(pytest_args):
 @click.argument('sub_section')
 @click.argument('fragment')
 def upload(source, section, sub_section, fragment):
-    client = _get_s3_client(current_app.config)
-    key = _generate_key(current_app.config, section, sub_section, fragment)
-    content_ready_for_upload = _prepare_content(source.read())
+    client = get_s3_client(current_app.config)
+    key = generate_key(current_app.config, section, sub_section, fragment)
+    content_ready_for_upload = prepare_content(source.read())
     client.upload_fileobj(content_ready_for_upload, current_app.config['BUCKET_NAME'], key)
 
 
