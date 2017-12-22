@@ -1,3 +1,4 @@
+from os.path import splitext
 from io import BytesIO
 
 import boto3
@@ -13,14 +14,10 @@ def get_s3_client(config):
     return session.client(**kwargs)
 
 
-def generate_key(config, section, sub_section, fragment):
-    if '.' not in fragment:
-        return "{sec}/{sub_sec}/{frag}{fext}".format(sec=section,
-                                                     sub_sec=sub_section,
-                                                     frag=fragment,
-                                                     fext=config['CONTENT_FILE_EXTENSTION'])
-    else:
-        return "{sec}/{sub_sec}/{frag}".format(sec=section, sub_sec=sub_section, frag=fragment)
+def generate_key(config, path):
+    if not splitext(path)[1]:
+        return '{}{}'.format(path, config['CONTENT_FILE_EXTENSTION'])
+    return path
 
 
 def prepare_content(content):

@@ -5,29 +5,29 @@ from .util import get_s3_client, generate_key, prepare_content
 blueprint = Blueprint('content', __name__)
 
 
-@blueprint.route('/content/<section>/<sub_section>/<fragment>', methods=["PUT"])
-def add_content(section, sub_section, fragment):
+@blueprint.route('/content/<path:path>', methods=["PUT"])
+def add_content(path):
     """ Create or Update a piece of content
     Endpoint to Create or update a piece of Content in S3
     """
     body = request.get_json()
     config = current_app.config
     client = get_s3_client(config)
-    key = generate_key(config, section, sub_section, fragment)
+    key = generate_key(config, path)
     content = body['content']
     content_ready_for_upload = prepare_content(content)
     client.upload_fileobj(content_ready_for_upload, config['BUCKET_NAME'], key)
     return jsonify({"message": "Content Uploaded to {b}/{k}".format(b=config['BUCKET_NAME'], k=key)})
 
 
-@blueprint.route('/content/<section>/<sub_section>/<fragment>', methods=["GET"])
-def content(section, sub_section, fragment):
+@blueprint.route('/content/<path:path>', methods=["GET"])
+def content(path):
     """ Get a piece of content
     Endpoint to retrieve content from S3
     """
     config = current_app.config
     client = get_s3_client(config)
-    key = generate_key(config, section, sub_section, fragment)
+    key = generate_key(config, path)
     kwargs = {"Bucket": config['BUCKET_NAME'], "Key": key}
     content_obj = client.get_object(**kwargs)
     content_length = content_obj['ContentLength']
