@@ -1,21 +1,15 @@
-FROM jfloff/alpine-python:latest
-# Install packages
-RUN apk update
+FROM python:3.6-alpine
 
-RUN mkdir /code
+RUN apk update && apk add --update tini build-base
+COPY requirements.txt /tmp/
+RUN pip --no-cache-dir install -r /tmp/requirements.txt && \
+    pip --no-cache-dir install gevent==1.2.2 gunicorn==19.7.1
 
-ADD . /code
-
-ENV PYTHONIOENCODING "utf-8"
+COPY ./ /code
 
 WORKDIR /code
 
-RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
-RUN pip install -U pip && pip install -r requirements.txt && pip install gevent gunicorn
-ADD https://github.com/krallin/tini/releases/download/v0.13.0/tini-static-amd64 /sbin/tini
-RUN chmod +x /sbin/tini
-
-
 EXPOSE 5004
 
-ENTRYPOINT ["/sbin/tini", "--", "/code/docker-config/entrypoint.sh"]
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["/usr/local/bin/gunicorn", "-c", "docker-config/gunicorn.py", "content.app:create_app()"]
