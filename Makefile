@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 DOCKER = $(shell which docker)
-DOCKER_REPO ?= "your-repo"
+DOCKER_REPO ?= "674578336145.dkr.ecr.ap-southeast-1.amazonaws.com"
 DOCKER_TAG ?= latest
 IMAGE = zipmatch/zipmatch-content:$(DOCKER_TAG)
 REMOTE_IMAGE = $(DOCKER_REPO)/$(IMAGE)
