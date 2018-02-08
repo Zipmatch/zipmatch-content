@@ -7,4 +7,4 @@ blueprint = Blueprint('status', __name__)
 @blueprint.route('/status')
 def status():
     """ Status endpoint. """
-    return jsonify({'message': 'Let the Content Flow!'})
+    return jsonify({'message': 'Let the Content Flow!', 'service': 'contentapi'})
