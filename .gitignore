@@ -1,5 +1,6 @@
-/.python-version
 __pycache__
-/.env
-.cache
-.coverage
+*.py[co]
+.*
+!.dockerignore
+!.gitignore
+*.sqlite
