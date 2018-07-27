@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 
 from botocore.exceptions import ClientError
 
-from .extensions import envcfg, apierrors, applogging
+from .extensions import envcfg, apierrors, applogging, cache
 from .blueprints.status import blueprint as status_bp
 from .blueprints.content import blueprint as content_bp
 
@@ -13,6 +13,7 @@ def create_app():
     envcfg.init_app(app)
     applogging.init_app(app)
     apierrors.init_app(app)
+    cache.init_app(app)
     app.register_blueprint(status_bp)
     app.register_blueprint(content_bp, url_prefix='/v1')
     app.register_error_handler(ClientError, _no_such_key)
