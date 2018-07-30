@@ -22,25 +22,22 @@ def add_content(path):
 
 
 @blueprint.route('/content/<path:path>', methods=["GET"])
+@cache.cached
 def get_content(path):
     """ Get a piece of content
     Endpoint to retrieve content from S3
     """
-    cache_key = 'content:{}'.format(path)
-    content = cache.get(cache_key)
-    if not content:
-        config = current_app.config
-        client = get_s3_client(config)
-        key = generate_key(config, path)
-        kwargs = {"Bucket": config['BUCKET_NAME'], "Key": key}
-        content_obj = client.get_object(**kwargs)
-        content_length = content_obj['ContentLength']
-        content_body = content_obj['Body'].read().decode('utf8')
-        content = {"bucket": config['BUCKET_NAME'],
-                   "key": key,
-                   "content_length": content_length,
-                   "body": content_body}
-        cache.set(cache_key, content)
+    config = current_app.config
+    client = get_s3_client(config)
+    key = generate_key(config, path)
+    kwargs = {"Bucket": config['BUCKET_NAME'], "Key": key}
+    content_obj = client.get_object(**kwargs)
+    content_length = content_obj['ContentLength']
+    content_body = content_obj['Body'].read().decode('utf8')
+    content = {"bucket": config['BUCKET_NAME'],
+                "key": key,
+                "content_length": content_length,
+                "body": content_body}
     return jsonify(content)
 
 
