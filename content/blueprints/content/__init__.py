@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, current_app, request
 
 from .util import get_s3_client, generate_key, prepare_content
+from ...extensions import cache
 
 blueprint = Blueprint('content', __name__)
 
@@ -21,7 +22,8 @@ def add_content(path):
 
 
 @blueprint.route('/content/<path:path>', methods=["GET"])
-def content(path):
+@cache.cached()
+def get_content(path):
     """ Get a piece of content
     Endpoint to retrieve content from S3
     """
@@ -32,13 +34,15 @@ def content(path):
     content_obj = client.get_object(**kwargs)
     content_length = content_obj['ContentLength']
     content_body = content_obj['Body'].read().decode('utf8')
-    return jsonify({"bucket": config['BUCKET_NAME'],
-                    "key": key,
-                    "content_length": content_length,
-                    "body": content_body})
+    content = {"bucket": config['BUCKET_NAME'],
+               "key": key,
+               "content_length": content_length,
+               "body": content_body}
+    return jsonify(content)
 
 
 @blueprint.route('/content/paths', methods=["GET"])
+@cache.cached()
 def get_paths():
     """ Create and retrieve an 'filepaths' Object
     Endpoint to Create and retrieve an Object that represents all of the filepaths

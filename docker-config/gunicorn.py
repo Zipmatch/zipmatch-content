@@ -18,4 +18,5 @@ if os.environ.get('GUNICORN_WORKER_CONNECTIONS'):
     worker_connections = int(os.environ['GUNICORN_WORKER_CONNECTIONS'])
 if os.environ.get('GUNICORN_MAX_REQUESTS'):
     max_requests = int(os.environ.get('GUNICORN_MAX_REQUESTS'))
-max_requests_jitter = int(os.environ.get('GUNICORN_MAX_REQUESTS_JITTER', 100))
+    if os.environ.get('GUNICORN_MAX_REQUESTS_JITTER'):
+        max_requests_jitter = int(os.environ.get('GUNICORN_MAX_REQUESTS_JITTER', 100))
