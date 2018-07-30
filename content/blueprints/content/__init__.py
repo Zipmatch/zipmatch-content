@@ -22,7 +22,7 @@ def add_content(path):
 
 
 @blueprint.route('/content/<path:path>', methods=["GET"])
-@cache.cached
+@cache.cached()
 def get_content(path):
     """ Get a piece of content
     Endpoint to retrieve content from S3
