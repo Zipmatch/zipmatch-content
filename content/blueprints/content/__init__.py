@@ -35,9 +35,9 @@ def get_content(path):
     content_length = content_obj['ContentLength']
     content_body = content_obj['Body'].read().decode('utf8')
     content = {"bucket": config['BUCKET_NAME'],
-                "key": key,
-                "content_length": content_length,
-                "body": content_body}
+               "key": key,
+               "content_length": content_length,
+               "body": content_body}
     return jsonify(content)
 
 
