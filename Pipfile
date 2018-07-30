@@ -8,6 +8,7 @@ boto3 = "*"
 markdown = "*"
 flask = "*"
 flask-caching = "*"
+redis = "*"
 
 [dev-packages]
 pytest = "*"
