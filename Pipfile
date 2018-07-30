@@ -7,6 +7,7 @@ name = "pypi"
 boto3 = "*"
 markdown = "*"
 flask = "*"
+flask-caching = "*"
 
 [dev-packages]
 pytest = "*"
