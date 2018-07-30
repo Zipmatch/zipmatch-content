@@ -42,7 +42,7 @@ def get_content(path):
 
 
 @blueprint.route('/content/paths', methods=["GET"])
-@cache.cached
+@cache.cached()
 def get_paths():
     """ Create and retrieve an 'filepaths' Object
     Endpoint to Create and retrieve an Object that represents all of the filepaths
