@@ -4,11 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-boto3 = "*"
-markdown = "*"
-flask = "*"
-flask-caching = "*"
-redis = "*"
+boto3 = "~=1.9"
+markdown = "~=3.1"
+flask = "~=1.0"
+flask-caching = "~=1.7"
+redis = "~=3.2"
 
 [dev-packages]
 pytest = "*"
